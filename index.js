@@ -9,8 +9,6 @@ function OSFunc() {
     this.execCommand = function (cmd, callback) {
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
-                console.log("ERROR")
-                console.error(`exec error: ${error}`);
                 callback(true, stderr);
                 return;
             }
@@ -58,6 +56,7 @@ app.get("/cloneGitHub", (req, res) => {
             if(err){
                 return res.send("Could not clone into " + url + " error: " + response)
             }
+            //TODO: Run build command here
             res.send(response)
         })
     })
