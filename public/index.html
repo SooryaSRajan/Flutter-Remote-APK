@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            background-color: #fffefe;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        form {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding-left: 10px;
+            height: 40px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ccc;
+            color: #fff;
+            box-shadow: 0 0 5px #ccc;
+            transform: scale(1.01, 1.01);
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin-top: 10px;
+            align-self: start;
+        }
+    </style>
+</head>
+<!--This page accepts a github url and a next button to move to the next page-->
+<!-- prevent default and make XMLHTTPREQUEST to get the data from the github url-->
+
+<body>
+    <form>
+        <h3>
+            Enter a Github URL of a Flutter project to build and get APK
+        </h3>
+        <input type="text" name="url" placeholder="Github URL">
+        <input type="submit" value="Next">
+    </form>
+    <script>
+        const element = document.querySelector('form');
+        element.addEventListener('submit', event => {
+            event.preventDefault();
+            const url = document.querySelector('input[name="url"]').value;
+            //validate url
+            if (url.length == 0) {
+                alert("Please enter a valid URL");
+                return;
+            }
+            console.log("SUBMIT");
+            let xhr = new XMLHttpRequest();
+
+            xhr.open('GET', '/cloneGitHub' + '?url=' + url, true);
+
+            xhr.onload = function () {
+                if (xhr.status != 200) { // analyze HTTP status of the response
+                    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+                } else { // show the result
+                    alert(`Done, got ${xhr.response.length} bytes, response: ${xhr.response}`); // response is the server response
+                }
+            };
+
+            xhr.onprogress = function (event) {
+            };
+
+            xhr.onerror = function () {
+                alert("Request failed");
+            };
+
+            xhr.send();
+            console.log("SENT");
+
+        });
+    </script>
+</body>
+
+</html>
