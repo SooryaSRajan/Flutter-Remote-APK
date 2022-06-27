@@ -69,6 +69,58 @@
             margin-top: 10px;
             align-self: start;
         }
+
+        #error {
+            display: none;
+            color: red;
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid red;
+            background-color: rgb(255, 185, 199);
+        }
+
+        #loader {
+            margin-top: 10px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            display: none;
+        }
+
+        a {
+            margin-top: 10px;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+            background-color: white;
+            color: black;
+            border: 2px solid green;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: none;
+        }
+
+        a:hover{
+            background-color: green;
+            color: white;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <!--This page accepts a github url and a next button to move to the next page-->
@@ -80,11 +132,20 @@
             Enter a Github URL of a Flutter project to build and get APK
         </h3>
         <input type="text" name="url" placeholder="Github URL">
-        <input type="submit" value="Next">
+        <input type="submit" value="Next" id="submit">
+        <a href="/apk" id="download">Click Here To Download</a>
+        <div id="loader"></div>
+        <span id="error">Error</span>
     </form>
     <script>
         const element = document.querySelector('form');
         element.addEventListener('submit', event => {
+
+            //hide error
+            document.getElementById('error').innerHTML = '';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('download').style.display = 'none';
+
             event.preventDefault();
             const url = document.querySelector('input[name="url"]').value;
             //validate url
@@ -92,24 +153,29 @@
                 alert("Please enter a valid URL");
                 return;
             }
-            console.log("SUBMIT");
             let xhr = new XMLHttpRequest();
 
             xhr.open('GET', '/cloneGitHub' + '?url=' + url, true);
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('submit').style.display = 'none';
 
             xhr.onload = function () {
-                if (xhr.status != 200) { // analyze HTTP status of the response
-                    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+
+                //hide loader
+                document.getElementById('loader').style.display = 'none';
+
+                //show button
+                document.getElementById('submit').style.display = 'block';
+
+                if (xhr.status != 200) {
+                    // analyze HTTP status of the response
+                    //show error if not 200
+                    document.getElementById('error').innerHTML = xhr.response;
+                    document.getElementById('error').style.display = 'block';
+                    
                 } else { // show the result
-                    alert(`Done, got ${xhr.response.length} bytes, response: ${xhr.response}`); // response is the server response
+                    document.getElementById('download').style.display = 'inline-block';
                 }
-            };
-
-            xhr.onprogress = function (event) {
-            };
-
-            xhr.onerror = function () {
-                alert("Request failed");
             };
 
             xhr.send();
