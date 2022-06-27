@@ -61,7 +61,7 @@ app.get("/cloneGitHub", (req, res) => {
             os.execCommand(`cd FlutterCode && ls && flutter build apk -v`, function (err, response){
                 console.log(response)
                 if(err){
-                    return res.status(400).send("Could not build flutter APK, " + " error: " + response)
+                    return res.status(400).send("Could not build flutter APK, please check if the project folder has main.dart and pubspec.yaml")
                 }
                 else{
                     return res.send("APK build was successful!")
