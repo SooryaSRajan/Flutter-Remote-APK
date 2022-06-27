@@ -64,7 +64,7 @@ app.get("/cloneGitHub", (req, res) => {
                     return res.status(400).send("Could not build flutter APK, " + " error: " + response)
                 }
                 else{
-                    return res.send("APK build successfully!")
+                    return res.send("APK build was successful!")
                 }
             })
         })
